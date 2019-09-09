@@ -1,13 +1,13 @@
 # Buzzer for the blind test
 
 ## Bill of materials
+- a Wemos Mini D1 (or any ESP8266 board)
+- a strip of 6 WS2812b RGB leds (a.k.a. Adafruit NeoPixels)
+- an arcade push button
+- a small bowerbank to power the system
+- a plastic cup as a housing
 
-A Wemod Mini D1 (or any ESP8266 board)
-A stripe of 6 WS2812b RGB leds (a.k.a. Adafruit NeoPixels)
-An arcade push button
-A small bowerbank to power the system
-A plastic cup as a housing
-
+## Schematics
 ![Schematics](schema.png)
 
 ## Firmware
