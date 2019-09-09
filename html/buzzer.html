@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <span id="winner"></span>
+        <button type="button" onclick="hit()">Hit</button>
+        <script>
+'use strict';
+
+const ws = new WebSocket(`ws://${location.hostname}:3000/`);
+ws.addEventListener('error', console.error);
+ws.addEventListener('message', msg => {
+    console.log('message', msg);
+    const w = document.getElementById('winner');
+    w.innerHTML = msg.data;
+});
+function hit() {
+    ws.send('hit');
+}
+        </script>
+    </body>
+</html>

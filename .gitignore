@@ -1,0 +1,6 @@
+*~
+*.bak
+html/data
+node_modules/
+config.json*
+saved-state.json

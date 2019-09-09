@@ -1,0 +1,179 @@
+{
+  "teams": [
+    {
+      "name": "Strawberry",
+      "logo": "static/strawberry.png",
+      "color": "ff0000"
+    },
+    {
+      "name": "Banana",
+      "logo": "static/banana.png",
+      "color": "00ff00"
+    },
+    {
+      "name": "Apple",
+      "logo": "static/apple.png",
+      "color": "0000ff"
+    },
+    {
+      "name": "Apricot",
+      "logo": "static/apricot.png",
+      "color": "ffff00"
+    },
+    {
+      "name": "Cherry",
+      "logo": "static/cherry.png",
+      "color": "ff00ff"
+    },
+    {
+      "name": "Raspberry",
+      "logo": "static/raspberry.png",
+      "color": "00ffff"
+    }
+  ],
+  "game": [
+    {
+      "title": "Round 1 - Music",
+      "items": [
+            {
+                "src": "data/r1/Baby one more time.mp3",
+                "title": "Britney Spears - Baby one more time"
+            }, {
+                "src": "data/r1/Black Betty.mp3",
+                "title": "Ram Jam - Black Betty"
+            }, {
+                "src": "data/r1/Dancing Queen.mp3",
+                "title": "Abba - Dancing Queen"
+            }, {
+                "src": "data/r1/Hit The Road, Jack.mp3",
+                "title": "Ray Charles - Hit The Road, Jack"
+            }, {
+                "src": "data/r1/I will survive.mp3",
+                "title": "Gloria Gaynor - I will survive"
+            }, {
+                "src": "data/r1/Dragoste din tei.MP3",
+                "title": "Ozone - Dragoste din tei"
+            }, {
+                "src": "data/r1/Seven Nation Army.m4a",
+                "title": "The White Stripes - Seven Nation Army"
+            }, {
+                "src": "data/r1/Bohemian Rhapsody.mp3",
+                "title": "Queen - Bohemian Rhapsody"
+            }, {
+                "src": "data/r1/Wannabe.mp3",
+                "title": "Spice Girls - Wannabe"
+            }, {
+                "src": "data/r1/Take Me Out.mp3",
+                "title": "Franz Ferdinand - Take Me Out"
+            }, {
+                "src": "data/r1/99 Luftballons.mp3",
+                "title": "Nena - 99 Luftballons"
+            }
+      ]
+    },
+    {
+      "title": "Round 2 - Almost that",
+      "items": [
+            {
+                "src": "data/r3/AC-DC - Thunderstruck.mp3",
+                "title": "AC-DC - Thunderstruck",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Chuck Berry - Jonny B. Goode.opus",
+                "title": "Chuck Berry - Jonny B. Goode",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Coolio - Gangsta's paradise.opus",
+                "title": "Coolio - Gangsta's paradise",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Darude - Sandstorm.mp3",
+                "title": "Darude - Sandstorm",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Effeil 65 - Blue.opus",
+                "title": "Effeil 65 - Blue",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Europe - The Final Countdown.mp3",
+                "title": "Europe - The Final Countdown",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Eurythmics - Sweet Dreams.mp3",
+                "title": "Eurythmics - Sweet Dreams",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Linkin Park - In The End.opus",
+                "title": "Linkin Park - In The End",
+                "markers": { "start": 0, "original": 240 }
+            },
+            {
+                "src": "data/r3/Scorpion - Still loving you.mp3",
+                "title": "Scorpion - Still loving you",
+                "markers": { "start": 0, "original": 240 }
+        }
+      ]
+    },
+    {
+      "title": "Round 3 - Movies & TV",
+      "items": [
+            {
+                "src": "data/r2/Batman.mp3",
+                "title": "Batman"
+            },
+            {
+                "src": "data/r2/Buffy.opus",
+                "title": "Buffy"
+            },
+            {
+                "src": "data/r2/Friends.opus",
+                "title": "Friends"
+            },
+            {
+                "src": "data/r2/indiana.opus",
+                "title": "Indiana Johns"
+            },
+            {
+                "src": "data/r2/amelie.opus",
+                "title": "Amelie Poulain"
+            },
+            {
+                "src": "data/r2/Gladiator.opus",
+                "title": "Gladiator"
+            },
+            {
+                "src": "data/r2/Starwar.opus",
+                "title": "Star War"
+            },
+            {
+                "src": "data/r2/McGyver.m4a",
+                "title": "McGyver"
+            },
+            {
+                "src": "data/r2/Mission impossible.opus",
+                "title": "Mission impossible"
+            },
+            {
+                "src": "data/r2/pirate.m4a",
+                "title": "Pirates of the Carabbean.m4a"
+            },
+            {
+                "src": "data/r2/Startrek.mp3",
+                "title": "Star Trek"
+            },
+            {
+                "src": "data/r2/Aladin.opus",
+                "title": "Aladin"
+            }
+
+      ]
+    }
+  ]
+}

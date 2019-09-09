@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <style>
+        body {
+            background-color: #EB0149;
+            text-alignment: center;
+            font-size: 100px;
+            font-familly: arial;
+            color: white;
+        }
+        body.answer {
+            background-color: white;
+        }
+        body.pause #cell {
+            background: url('static/pause.png') no-repeat 50% 50%;
+            width: 512px;
+            height: 512px;
+        }
+        #container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 0;
+            left: 0;
+        }
+        #cell {
+            max-width: 80%;
+        }
+        #scores {
+            position: absolute;
+            width: 200px;
+            height: 500px;
+            margin-top: -250px;
+            top: 50%;
+            right: 0;
+            z-index: 10;
+            font-size: 50px;
+        }
+        .start #scores { display: none }
+        #scores>div {
+            height: 20%;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            transition-property: top;
+            transition-duration: 1s;
+            transition-timing-function: ease;
+
+        }
+        #scores>div>div {
+            width: 100px;
+            height: 100px;
+            overflow-x: hidden;
+            display:inline-block;
+            vertical-align: middle;
+        }
+        #scores>div>div>img {
+            height: 100%;
+        }
+        #scores>div>span {
+        }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="cell">
+                <span id="winner"></span>
+            </div> 
+        </div> 
+        <div id="scores"></div>
+        <audio id="audio" preload="auto"></audio>
+        <audio id="audio2" preload="auto" src="static/scratch01.mp3"></audio>
+        <audio id="audio2" preload="auto" src="static/tada.mp3"></audio>
+        <audio id="audio2" preload="auto" src="static/rewind.mp3"></audio>
+        <script src="jquery-3.4.1.min.js"></script>
+        <script src="display.js"></script>
+    </body>
+</html>
