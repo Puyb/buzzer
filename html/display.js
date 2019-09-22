@@ -14,12 +14,11 @@ function run() {
     });
     let state;
     ws.addEventListener('message', msg => {
-        //console.log('display', msg.data);
+        console.log('display', msg.data);
         const w = document.getElementById('winner');
         const displayControl = document.getElementById('control');
 
         const data = JSON.parse(msg.data);
-        console.log('display', data.teams.map(v => v.name + v.score));
         for (const cl of ['start', 'round', 'play', 'pause', 'answer', 'wrong', 'right'])
             document.body.classList.remove(cl);
         document.body.classList.add(data.state);
@@ -48,55 +47,54 @@ function run() {
             item.find('span').text(team.score);
             i++;
         }
-        if (state !== data.state) {
-            state = data.state;
-            switch (data.state) {
-                case 'start':
-                    break;
-                case 'round':
-                    if (audio) audio.pause();
-                    w.innerHTML = data.round;
-                    break;
-                case 'play':
-                case 'listen':
-                    if (audio) {
-                        if (data.item.src !== currentAudioSrc) {
-                            console.log('load', data.item.src);
-                            currentAudioSrc = data.item.src;
-                            audio.src = data.item.src;
-                        }
-                        audio.play();
+        const hasChanged = state !== data.state;
+        state = data.state;
+        switch (data.state) {
+            case 'start':
+                break;
+            case 'round':
+                if (audio) audio.pause();
+                w.innerHTML = data.round;
+                break;
+            case 'play':
+            case 'listen':
+                if (audio) {
+                    if (data.item.src !== currentAudioSrc) {
+                        console.log('load', data.item.src);
+                        currentAudioSrc = data.item.src;
+                        audio.src = data.item.src;
                     }
-                    break;
-                case 'pause':
-                    if (audio) audio.pause();
-                    break;
-                case 'answer':
-                    w.innerHTML = `<img src="${data.team.logo}">`;
+                    audio.play();
+                }
+                break;
+            case 'pause':
+                if (audio) audio.pause();
+                break;
+            case 'answer':
+                w.innerHTML = `<img src="${data.team.logo}">`;
 
-                    if (audio) {
-                        audioAnswer.play();
-                        audio.pause();
-                    }
-                    break;
-                case 'right':
-                    w.innerHTML = `Right answer<br />${data.item.title}`;
-                    if (audio) {
-                        audioRight.play();
-                    }
-                    break;
-                case 'wrong':
-                    w.innerHTML = 'Wrong answer';
-                    if (audio) {
-                        audioWrong.play();
-                    }
-                    break;
-                case 'end':
-                    if (audio) {
-                        audioWrong.pause();
-                    }
-                    break;
-            }
+                if (audio && hasChanged) {
+                    audioAnswer.play();
+                    audio.pause();
+                }
+                break;
+            case 'right':
+                w.innerHTML = `Right answer<br />${data.item.title}`;
+                if (audio && hasChanged) {
+                    audioRight.play();
+                }
+                break;
+            case 'wrong':
+                w.innerHTML = 'Wrong answer';
+                if (audio && hasChanged) {
+                    audioWrong.play();
+                }
+                break;
+            case 'end':
+                if (audio) {
+                    audio.pause();
+                }
+                break;
         }
         if (audio && data.action === 'seek') {
             if (data.relative) {

@@ -9,7 +9,9 @@
 'use strict';
 
 const ws = new WebSocket(`ws://${location.hostname}:3000/`);
-ws.addEventListener('error', console.error);
+ws.addEventListener('error', err => {
+    console.error(err.stack);
+});
 ws.addEventListener('message', msg => {
     console.log('message', msg);
     const w = document.getElementById('winner');

@@ -1,5 +1,5 @@
 'use strict';
-const buttons = ['start', 'play', 'prev', 'next', 'pause', 'right', 'wrong', 'listen', '<<', '>>', 'reinit'];
+const buttons = ['<<', '>>', 'reinit'];
 
 function run2() {
     const buttonsDiv = $('#buttons').empty();
@@ -17,7 +17,7 @@ function run2() {
         const data = JSON.parse(message.data);
         $('.teamButton').remove();
         for (const team of data.teams.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
-            const d = $('<div>').addClass('teamButton').appendTo(buttonsDiv);
+            const d = $('<div>').addClass('teamButton').appendTo($('#teams'));
             $('<button></button>')
                 .attr('type', 'button')
                 .text(`${team.name} +1`)
@@ -64,6 +64,44 @@ function run2() {
                             timestamp,
                         }));
                     }).appendTo(buttonsDiv);
+            }
+        }
+        $('#states').empty();
+        for (const state of data.next) {
+            $('<button>')
+                .attr('type', 'button')
+                .text(state)
+                .click(() => {
+                    ws2.send(JSON.stringify({
+                        action: 'state',
+                        state,
+                    }));
+                }).appendTo($('#states'));
+            if (state === 'next') {
+                const select = $('<select>')
+                    .change(() => {
+                        const option = select.find(':selected');
+                        if (!option.text()) return;
+                        ws2.send(JSON.stringify({
+                            action: 'state',
+                            state: 'next',
+                            round: option.data('round'),
+                            item: option.data('item'),
+                        }));
+                    }).appendTo($('#states'));
+                select.append($('<option>'));
+                for (const [roundIndex, round] of Object.entries(data.rounds)) {
+                    const group = $('<optgroup>')
+                        .attr('label', round.title)
+                        .appendTo(select);
+                    for (const [itemIndex, item] of Object.entries(round.items)) {
+                        group.append($('<option>')
+                            .data('round', roundIndex)
+                            .data('item', itemIndex)
+                            .text(item.title)
+                        );
+                    }
+                }
             }
         }
     });

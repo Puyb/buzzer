@@ -1,14 +1,41 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background: black;
+                color: #cccccc;
+            }
+            #container {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                width: 100%;
+                height: 100%;
+            }
+            #winner img {
+                width: 50px;
+                float: left;
+            }
+        </style>
     </head>
     <body>
-        <div id="winner"></div>
-        <div data-prop="state"></div>
-        <div data-prop="round"></div>
-        <div data-prop="item.title"></div>
-        <input id="volume" type="range" min="0" max="1000" step="1" value="100" /> 
-        <div id="buttons"></div>
+        <div id="container">
+            <div class="row" id="status">
+                <div id="winner"></div>
+                <div data-prop="round"></div>
+                <div data-prop="item.title"></div>
+            </div>
+            <div class="row" id="controls">
+                <input id="volume" type="range" min="0" max="100" step="1" value="100" /> 
+                <div id="buttons"></div>
+            </div>
+            <div class="row" id="states">
+                <div data-prop="state"></div>
+            </div>
+            <div class="row" id="teams">
+            </div>
+        </div>
         <script src="jquery-3.4.1.min.js"></script>
         <script src="display.js"></script>
         <script src="control.js"></script>

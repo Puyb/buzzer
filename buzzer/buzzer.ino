@@ -1,10 +1,11 @@
 #define BUTTON_PIN 0
+#define DEBOUNCE_DELAY 50
 #define USE_SERIAL Serial
 #define LED_PIN    5
 #define LED_COUNT 6
-#define WIFI "buzzer"
-#define KEY "buzzer1"
-#define HOST "192.168.5.1"
+#define WIFI "Puyb.net"
+#define KEY "badbadc0de"
+#define HOST "192.168.42.17"
 #define PORT 3000
 
 #include <Arduino.h>
@@ -16,14 +17,14 @@
 
 #include <Hash.h>
 
-#include <Adafruit_NeoPixel.h>
+// #include <Adafruit_NeoPixel.h>
+#include <WS2812FX.h>
 
 ESP8266WiFiMulti WiFiMulti;
 WebSocketsClient webSocket;
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-char state[20] = "";
 uint32 color = 0;
 
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
@@ -35,8 +36,60 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 			USE_SERIAL.printf("[WSc] Connected to url: %s\n", payload);
 			break;
 		case WStype_TEXT:
-      sscanf((char*)payload, "%s %x", &state, &color);
-      USE_SERIAL.printf("[WSc] state: %s, color: %x\n", state, color);
+      USE_SERIAL.printf("[WSc] payload: %s", payload);
+      if (strcmp((char*)payload,"b+") == 0) {
+        ws2812fx.increaseBrightness(25);
+        Serial.print(F("Increased brightness by 25 to: "));
+        Serial.println(ws2812fx.getBrightness());
+      }
+    
+      if (strcmp((char*)payload,"b-") == 0) {
+        ws2812fx.decreaseBrightness(25); 
+        Serial.print(F("Decreased brightness by 25 to: "));
+        Serial.println(ws2812fx.getBrightness());
+      }
+    
+      if (strncmp((char*)payload,"b ",2) == 0) {
+        uint8_t b = (uint8_t)atoi((char*)payload + 2);
+        ws2812fx.setBrightness(b);
+        Serial.print(F("Set brightness to: "));
+        Serial.println(ws2812fx.getBrightness());
+      }
+    
+      if (strcmp((char*)payload,"s+") == 0) {
+        ws2812fx.setSpeed(ws2812fx.getSpeed() * 1.2);
+        Serial.print(F("Increased speed by 20% to: "));
+        Serial.println(ws2812fx.getSpeed());
+      }
+    
+      if (strcmp((char*)payload,"s-") == 0) {
+        ws2812fx.setSpeed(ws2812fx.getSpeed() * 0.8);
+        Serial.print(F("Decreased speed by 20% to: "));
+        Serial.println(ws2812fx.getSpeed());
+      }
+    
+      if (strncmp((char*)payload,"s ",2) == 0) {
+        uint16_t s = (uint16_t)atoi((char*)payload + 2);
+        ws2812fx.setSpeed(s); 
+        Serial.print(F("Set speed to: "));
+        Serial.println(ws2812fx.getSpeed());
+      }
+    
+      if (strncmp((char*)payload,"m ",2) == 0) {
+        uint8_t m = (uint8_t)atoi((char*)payload + 2);
+        ws2812fx.setMode(m);
+        Serial.print(F("Set mode to: "));
+        Serial.print(ws2812fx.getMode());
+        Serial.print(" - ");
+        Serial.println(ws2812fx.getModeName(ws2812fx.getMode()));
+      }
+    
+      if (strncmp((char*)payload,"c ",2) == 0) {
+        uint32_t c = (uint32_t)strtoul((char*)payload + 2, NULL, 16);
+        ws2812fx.setColor(c);
+        Serial.print(F("Set color to: 0x"));
+        Serial.println(ws2812fx.getColor(), HEX);
+      }
       break;
   }
 
@@ -86,75 +139,32 @@ void setup() {
 
   pinMode(BUTTON_PIN, INPUT);
 
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  ws2812fx.init();
+  ws2812fx.setBrightness(100);
+  ws2812fx.setSpeed(200);
+  ws2812fx.setMode(FX_MODE_RAINBOW_CYCLE);
+  ws2812fx.start();
 }
 
+int buttonState = LOW;
+int lastButtonState = HIGH;
+unsigned long lastDebounceTime = 0;
 void loop() {
-  byte buttonState;
 	webSocket.loop();
-  buttonState = digitalRead(BUTTON_PIN);
-  if (!buttonState && !strcmp(state, "rainbow")) {
-    strncpy(state, "black", sizeof(state));
-    webSocket.sendTXT("hit");
+  int reading = digitalRead(BUTTON_PIN);
+  if (reading != lastButtonState) {
+    lastDebounceTime = millis();
   }
-  if (!strcmp(state, "gyro")) {
-    gyro();
-  } else if (!strcmp(state, "rainbow")) {
-    rainbow();
-  } else if (!strcmp(state, "solid")) {
-    solid(color);
-  } else {
-    black();
-  }
-}
-long last_refresh = 0;
-void rainbow() {
-  long now = millis() / 10;
-  if (last_refresh == now) return;
-  last_refresh = now;
-  long firstPixelHue = now % (5 * 65536 / 256) * 256;
 
-  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-    int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
-    strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
-  }
-  strip.show(); // Update strip with new contents
-}
-
-void gyro() {
-  byte value;
-  long now = millis() / 10;
-  if (last_refresh == now) return;
-  last_refresh = now;
-
-  float fpos = fmod(now / 10.0, strip.numPixels());
-  byte pos = (int)fpos;
-  float mod = fmod(fpos, 1.0);
-  for(int i=0; i<strip.numPixels(); i++) {
-    value = 0;
-    if (i == pos || i == (pos + strip.numPixels() / 2) % strip.numPixels()) {
-      value = 255 * mod;
-    } else if (i == (pos + 1) % strip.numPixels() || i == (pos + strip.numPixels() / 2 + 1) % strip.numPixels()) {
-      value = 255 * (1 - mod);
+  if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+    if (reading != buttonState) {
+      buttonState = reading;
+      if (!reading) {
+        USE_SERIAL.println("hit");
+        webSocket.sendTXT("hit");
+      }
     }
-    strip.setPixelColor(i, ((byte*)&color)[0] * value, ((byte*)&color)[1] * value, ((byte*)&color)[2] * value);
   }
-  strip.show(); // Update strip with new contents
-}
-
-void solid(uint32_t c) {
-  long now = millis() / 10;
-  if (last_refresh == now) return;
-  last_refresh = now;
-
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
-  }
-  strip.show(); // Update strip with new contents
-}
-
-void black() {
-  solid(0);
+  lastButtonState = reading;
+  ws2812fx.service();
 }
