@@ -15,3 +15,4 @@
 Firmware is made with arduino and depends on the following libraries:
 - Websockets - https://github.com/Links2004/arduinoWebSockets
 - Adafruit NeoPixel - https://github.com/adafruit/Adafruit_NeoPixel 
+- WS2812FX - https://github.com/kitesurfer1404/WS2812FX

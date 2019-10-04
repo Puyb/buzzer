@@ -50,19 +50,20 @@
             transition-timing-function: ease;
 
         }
-        #scores>div>div {
+        .icon {
             width: 100px;
             height: 100px;
             overflow-x: hidden;
-            display:inline-block;
+            display: inline-block;
             vertical-align: middle;
         }
-        #scores>div>div>img {
+        .icon>img {
             height: 100%;
         }
-        #scores>div>span {
+        .icon>span {
         }
         </style>
+        <link rel="stylesheet" type="text/css" href="/node_modules/csshake/dist/csshake.min.css">
     </head>
     <body>
         <div id="container">
@@ -75,7 +76,7 @@
         <audio id="audio2" preload="auto" src="static/scratch01.mp3"></audio>
         <audio id="audio2" preload="auto" src="static/tada.mp3"></audio>
         <audio id="audio2" preload="auto" src="static/rewind.mp3"></audio>
-        <script src="jquery-3.4.1.min.js"></script>
+        <script src="/node_modules/jquery/dist/jquery.min.js"></script>
         <script src="display.js"></script>
     </body>
 </html>

@@ -22,7 +22,6 @@ function run() {
         for (const cl of ['start', 'round', 'play', 'pause', 'answer', 'wrong', 'right'])
             document.body.classList.remove(cl);
         document.body.classList.add(data.state);
-        w.innerHTML = '';
         $('[data-prop]').each(function() {
             const el = $(this);
             const path = el.data('prop').split('.');
@@ -39,15 +38,24 @@ function run() {
                 console.log('create', team.name);
                 item = $(`<div class="score-${team.name}">`)
                         .html(`
-                    <div><img src="${team.logo}" /></div>
+                    <div class="icon shake-constant"><img src="${team.logo}" /></div>
                     <span>${team.score}</span>
                 `).appendTo($('#scores'));
             }
             item.css('top', `${20 * i}%`);
             item.find('span').text(team.score);
+            if (data.buzz === team.name) {
+                item.find('.icon').addClass('shake-hard');
+                setTimeout(() => {
+                    item.find('.icon').removeClass('shake-hard');
+                }, 500);
+            }
             i++;
         }
         const hasChanged = state !== data.state;
+        if (hasChanged) {
+            w.innerHTML = '';
+        }
         state = data.state;
         switch (data.state) {
             case 'start':
@@ -71,7 +79,9 @@ function run() {
                 if (audio) audio.pause();
                 break;
             case 'answer':
-                w.innerHTML = `<img src="${data.team.logo}">`;
+                if (hasChanged) {
+                    w.innerHTML = `<img src="${data.team.logo}">`;
+                }
 
                 if (audio && hasChanged) {
                     audioAnswer.play();
@@ -105,6 +115,9 @@ function run() {
         }
         if (audio && data.action === 'volume') {
             audio.volume = data.volume;
+        }
+        if (data.buzz) {
+        
         }
     });
 }

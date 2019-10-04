@@ -113,7 +113,7 @@ const changeAllBuzzers = async command => {
 const changeBuzzer = async (team, {mode, color, speed}) => team.connection && Promise.all([
     team.connection.send(`c ${color || team.color}`),
     speed && team.connection.send(`s ${speed}`),
-    mode && team.connection.send(`c ${mode || 0}`),
+    team.connection.send(`m ${mode || 0}`),
 ]);
 
 const connectDisplay = async ws => {
@@ -237,9 +237,11 @@ const onState = {
     },
 };
 
-const connectBuzzer = async ws => {
-    const team = _.find(teams, t => !t.connection);
+const connectBuzzer = async (ws, request) => {
+    const ip = request.connection.remoteAddress;
+    const team = _.find(teams, t => t.ip === ip) || _.find(teams, t => !t.connection);
     team.connection = ws;
+    team.ip = ip;
     team.send = async (...commands) => Promise.all(
         commands.map(command => ws.send(command))
     );
@@ -260,20 +262,21 @@ const connectBuzzer = async ws => {
     ws.on('message', async message => {
         try {
             console.log('message', state, winner, message);
-            if (state !== 'play' || winner) return;
             if (message !== 'hit') return;
-            console.log('received: %s %s', team.name, message);
+            if (state === 'play' && !winner) {
+                console.log('received: %s %s', team.name, message);
 
-            winner = team.name;
-            state = 'answer';
-            await updateDisplay();
-            await Promise.all(Object.values(teams).map(async t => {
-                if (winner === t.name) {
-                    await changeBuzzer(t, BUZZER_BLINK);
-                } else {
-                    await changeBuzzer(t, BUZZER_BLACK);
-                }
-            }));
+                winner = team.name;
+                state = 'answer';
+                await Promise.all(Object.values(teams).map(async t => {
+                    if (winner === t.name) {
+                        await changeBuzzer(t, BUZZER_BLINK);
+                    } else {
+                        await changeBuzzer(t, BUZZER_BLACK);
+                    }
+                }));
+            }
+            await updateDisplay({buzz: team.name});
         } catch (err) {
             console.error('error while receiving hit', err.stack);
         }
@@ -290,7 +293,7 @@ app.ws('/', async (ws, request) => {
         } else if (request.query.control) {
             await connectControl(ws);
         } else {
-            await connectBuzzer(ws);
+            await connectBuzzer(ws, request);
         }
     } catch (err) {
         console.error('ws err', err.stack);
