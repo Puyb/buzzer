@@ -154,7 +154,13 @@ const connectControl = async ws => {
                         });
                     }, 5000);
                     break;
-                case 'command':
+                case '<<':
+                    extra = {action: 'seek', relative: -10};
+                    break;
+                case '>>':
+                    extra = {action: 'seek', relative: 10};
+                    break;
+                case 'seek':
                     extra = data;
                     break;
                 case 'point':
